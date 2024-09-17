@@ -1,0 +1,14 @@
+name: celeryworkertemplate
+channels:
+  - defaults
+  - pytorch
+  - conda-forge
+dependencies:
+  - python=3.11
+  - fastapi
+  - celery==5.2.7
+  - uvicorn
+  - aio-pika
+  - websockets
+      
+prefix: C:/Users/Sam/miniconda3/envs/celeryworkertemplate

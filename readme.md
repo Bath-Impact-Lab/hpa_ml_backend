@@ -14,7 +14,7 @@
 Required dependencies are all bundled in the `environment.yml` file. You can use the following command to create a conda environment : 
 
 ```bash
-conda env create -f /app/environment.yml
+conda env create -f /src/environment.yml
 conda activate celeryworkertemplate
 ```
 

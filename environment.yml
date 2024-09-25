@@ -1,4 +1,4 @@
-name: celeryworkertemplate
+name: hpa_ml_celery_worker
 channels:
   - defaults
   - pytorch
@@ -10,5 +10,11 @@ dependencies:
   - uvicorn
   - aio-pika
   - websockets
+  - scikit-image
+  - scikit-learn
+  - requests
+  - numpy
+  - torch
+  - torchvision
       
 prefix: C:/Users/Sam/miniconda3/envs/celeryworkertemplate

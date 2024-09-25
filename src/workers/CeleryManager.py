@@ -83,13 +83,13 @@ class CeleryManager:
         def task_wrapper(self, **kwargs):
             try:
                 # Send a 'started' status update to RabbitMQ
-                asyncio.run(CeleryTaskBuilder._send_status_update(self.request.id, pipeline.startup_message, broker_url_))
+                asyncio.run(CeleryManager._send_status_update(self.request.id, pipeline.startup_message, broker_url_))
                 
                 # Execute the task using the pipeline
                 result = pipeline.execute(**kwargs)
 
                 # Send a 'success' status update to RabbitMQ after the task completes
-                asyncio.run(CeleryTaskBuilder._send_status_update(self.request.id, pipeline.success_message, broker_url_))
+                asyncio.run(CeleryManager._send_status_update(self.request.id, pipeline.success_message, broker_url_))
 
                 # Return the successful result as a JSON string
                 return json.dumps(result)
@@ -100,7 +100,7 @@ class CeleryManager:
                 print(error_message)  # Ideally, you'd use a proper logging system
 
                 # Send an 'error' status update to RabbitMQ
-                asyncio.run(CeleryTaskBuilder._send_status_update(self.request.id, f"error: {str(e)}", broker_url_))
+                asyncio.run(CeleryManager._send_status_update(self.request.id, f"error: {str(e)}", broker_url_))
 
                 # Return an error response
                 return json.dumps({

@@ -14,7 +14,7 @@ dependencies:
   - scikit-learn
   - requests
   - numpy
-  - torch
+  - pytorch
   - torchvision
       
 prefix: C:/Users/Sam/miniconda3/envs/celeryworkertemplate

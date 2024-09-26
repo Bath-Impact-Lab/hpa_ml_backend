@@ -1,3 +1,5 @@
+import os
+
 import aio_pika
 from celery import Celery
 from ..data_processing.pipeline_base import PipelineBase
@@ -29,12 +31,13 @@ class CeleryManager:
         
     """
 
-    def __init__(self, task_pipelines: list[PipelineBase], app, broker_url = 'amqp://guest:guest@localhost:5672//'):
+    def __init__(self, task_pipelines: list[PipelineBase], app):
                 
         # Initialize Celery app with the name 'tasks'
         self.app = app
         self.app.config_from_object('src.workers.celeryconfig')
-        self.broker_url = broker_url
+        self.broker_url = os.getenv('CELERY_BROKER_URL', 'amqp://guest:guest@rabbitmq:5672//')
+
         # Map task names to their respective Celery tasks created from pipelines
         self.task_map = {
             pipeline.task_name: self._create_celery_task(pipeline) for pipeline in task_pipelines
@@ -92,6 +95,7 @@ class CeleryManager:
                 asyncio.run(CeleryManager._send_status_update(self.request.id, pipeline.success_message, broker_url_))
 
                 # Return the successful result as a JSON string
+                print(result)
                 return json.dumps(result)
 
             except Exception as e:
@@ -118,6 +122,7 @@ class CeleryManager:
         """
         if task_name in self.task_map:
             # Trigger the task using the mapped Celery task
+            print(kwargs)
             return self.task_map[task_name].delay(**kwargs)
         else:
             raise ValueError(f"Task '{task_name}' not found in the task map.")

@@ -1,21 +1,26 @@
 from fastapi import FastAPI
 from .worker_init import celeryManager
+from pydantic import BaseModel
 
 '''
 Example fastAPI APP to handle adding requests to celery workers
 
 '''
 
+class Image_Request(BaseModel):
+    image_url: str
+
+
 app = FastAPI()
 
-@app.post("/example")
-async def example():
-    result = celeryManager.add_task_to_queue(task_name='example')
+@app.post("/example/")
+async def example(req:Image_Request):
+    result = celeryManager.add_task_to_queue(task_name='add_data', image_url=req.image_url)
     return {"task_id": result.id}
 
 @app.get("/example/{task_id}")
 async def example_result(task_id:str):
-    result = celeryManager.get_task_result(task_name='example', task_id=task_id)
+    result = celeryManager.get_task_result(task_name='add_data', task_id=task_id)
     return result
 
 

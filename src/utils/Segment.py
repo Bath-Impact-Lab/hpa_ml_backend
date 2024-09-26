@@ -1,6 +1,5 @@
 import numpy as np
 import base64
-from .logging import log_message
 
 class Segment:
     def __init__(self, vector, path, url):
@@ -21,7 +20,6 @@ class Segment:
         path_bytes = path.tobytes()
         # Encode the bytes to base64 string
         path_base64 = base64.b64encode(path_bytes).decode('utf-8')
-        log_message('info', f'{path_base64=}')
         return path_base64
 
     @classmethod

@@ -1,4 +1,7 @@
 import numpy as np
+import os
+os.environ["OMP_NUM_THREADS"] = '1'
+
 from sklearn.cluster import KMeans
 from sklearn.metrics.pairwise import cosine_similarity
 
@@ -27,7 +30,7 @@ def perform_clustering_and_build_graph(image_features, num_clusters=10, top_n=5)
             if labels[i] == labels[j]:
                 edge = {
                     'source': i,
-                    'target': j,
+                    'target': int(j),
                     'weight': float(similarity[i][j])
                 }
                 edges.append(edge)

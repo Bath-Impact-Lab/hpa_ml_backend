@@ -1,0 +1,54 @@
+version: '3.5'
+
+services:
+  # RabbitMQ for message brokering
+  rabbitmq:
+    image: "rabbitmq:3-management"
+    ports:
+      - "5672:5672"
+      - "15672:15672"  # RabbitMQ management UI
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # Task Management Endpoint
+  task_manager:
+    build: .
+    command: bash -c "source activate hpa_ml_celery_worker && uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload"
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app   # Mounts your local project directory into the container
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      CELERY_BROKER_URL: amqp://guest:guest@rabbitmq:5672//
+      CELERY_RESULT_BACKEND: rpc://
+
+  # Celery worker service
+  celery_worker:
+    build: .
+    command: bash -c "source activate hpa_ml_celery_worker && celery -A src.worker_init worker -P threads --loglevel=INFO"
+    volumes:
+      - .:/app
+    runtime: nvidia  # Use NVIDIA runtime for GPU access
+    environment:
+      NVIDIA_VISIBLE_DEVICES: all  # Expose all GPUs to this container
+      CELERY_BROKER_URL: amqp://guest:guest@rabbitmq:5672//
+      CELERY_RESULT_BACKEND: rpc://
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: ["gpu"]
+              device_ids: ["0"]  # Use GPU device 0 (or modify as needed)
+    depends_on:
+      rabbitmq:
+        condition: service_healthy

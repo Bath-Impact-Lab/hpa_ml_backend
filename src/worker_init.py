@@ -1,3 +1,4 @@
+from .data_processing.add_data_pipeline import add_data_pipeline
 from .workers.CeleryManager import CeleryManager
 from .data_processing.pipeline_base import PipelineBase
 from celery import Celery
@@ -7,7 +8,7 @@ app=Celery("tasks")
 
 
 # Create instances of Pipelines 
-task_pipeline = PipelineBase(task_name='example')
+task_pipeline = add_data_pipeline()
 
 
 # Create celery manager instance

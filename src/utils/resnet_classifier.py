@@ -49,8 +49,11 @@ class CustomImageDataset(Dataset):
         if image.shape[-1] == 4:
             image = color.rgba2rgb(image)
 
+        print(image.shape)
+
         # Edge detection using Canny
-        edges = feature.canny(image, sigma=1.0, low_threshold=self.edge_threshold1 / 255.0,
+        canny_image = color.rgb2gray(image)
+        edges = feature.canny(canny_image, sigma=1.0, low_threshold=self.edge_threshold1 / 255.0,
                               high_threshold=self.edge_threshold2 / 255.0)
         edges = edges.astype(np.float32)  # Canny already returns boolean, so convert to float [0,1]
 

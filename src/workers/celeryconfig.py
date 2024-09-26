@@ -1,6 +1,7 @@
+import os
 
+broker_url = os.getenv('CELERY_BROKER_URL', 'amqp://guest:guest@rabbitmq:5672//')
 
-broker_url = 'amqp://guest:guest@localhost:5672//'
 result_backend = 'rpc://'
 
 

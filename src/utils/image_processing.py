@@ -8,7 +8,6 @@ from numpy._typing import _64Bit
 from skimage import  io, color, morphology, measure, filters, exposure
 from sklearn.cluster import DBSCAN
 import numpy as np
-from .logging import log_message
 
 def download_image(image_url: str) -> np.ndarray:
     """

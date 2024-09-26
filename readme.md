@@ -2,7 +2,6 @@
 # Project Setup Guide
 
 
-![alt](architecture.drawio.svg)
 ## Prerequisites
 
 - Python 3.x

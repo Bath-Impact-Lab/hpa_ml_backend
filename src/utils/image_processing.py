@@ -76,7 +76,7 @@ def crop_image(image: np.ndarray, group_centers: list) -> list[ndarray[Any, dtyp
         print(f"Failed to crop image: {e}")
         return None
 
-def extract_protein_regions(image: np.ndarray) -> tuple[list[tuple[int, int]], list[Any] | None] | None:
+def extract_protein_regions(image: np.ndarray) -> tuple[list[tuple[float, float]], list[Any] | None] | None:
     """
     Extracts the protein regions from the given PIL Image object.
     Args:
@@ -88,8 +88,27 @@ def extract_protein_regions(image: np.ndarray) -> tuple[list[tuple[int, int]], l
     try:
         mask = create_protein_mask(image)
         regions = _cluster_regions(mask)
+
+        if regions is None:
+            print("No regions found.")
+            return None
+
+        # Get image dimensions
+        image_height, image_width = image.shape[:2]
+
+        # Calculate percentage positions
+        percent_regions = []
+        for (center_r, center_c) in regions:
+            x_percent = (center_c / image_width) * 100
+            y_percent = (center_r / image_height) * 100
+            percent_regions.append((x_percent, y_percent))
+            print(
+                f"Region center (pixels): ({center_r}, {center_c}) -> (percent): ({x_percent:.2f}%, {y_percent:.2f}%)")
+
+        # Crop images based on pixel centers
         cropped_images = crop_image(image, regions)
-        return regions, cropped_images
+
+        return percent_regions, cropped_images
     except Exception as e:
         print(f"Failed to extract protein regions: {e}")
         return None

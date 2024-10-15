@@ -157,7 +157,7 @@ def extract_features(images : np.ndarray) -> np.ndarray:
         edge_thresholds=(77, 207),
         protein_threshold=77
     )
-    dataloader = DataLoader(dataset, batch_size=32, shuffle=False, num_workers=4)
+    dataloader = DataLoader(dataset, batch_size=16, shuffle=False, num_workers=4)
 
     # Extract features
     feature_extractor = FeatureExtractor()

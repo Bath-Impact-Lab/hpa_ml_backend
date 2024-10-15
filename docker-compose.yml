@@ -42,6 +42,8 @@ services:
       NVIDIA_VISIBLE_DEVICES: all  # Expose all GPUs to this container
       CELERY_BROKER_URL: amqp://guest:guest@rabbitmq:5672//
       CELERY_RESULT_BACKEND: rpc://
+    tmpfs:
+      - /dev/shm:size=1g  # Increase /dev/shm to 1GB
     deploy:
       resources:
         reservations:
